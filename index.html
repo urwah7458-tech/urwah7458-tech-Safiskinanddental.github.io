@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sjux Clinic - Premium Medical & Dental Care</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- AlpineJS for easy reactivity -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        [x-cloak] { display: none !important; }
+        .gradient-bg { background: linear-gradient(135deg, #f0fdf4 0%, #ecfeff 100%); }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased font-sans" x-data="clinicApp()">
+
+    <!-- NAVBAR -->
+    <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-2 cursor-pointer" @click="setView('home')">
+                    <i data-lucide="activity" class="h-8 w-8 text-emerald-600"></i>
+                    <span class="text-xl font-bold tracking-tight text-slate-900" x-text="clinicInfo.name">Sjux Clinic</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <button @click="setView('home')" :class="view === 'home' ? 'text-emerald-600 font-semibold' : 'text-slate-600 hover:text-emerald-600'" class="transition">Home</button>
+                    <button @click="setView('skin')" :class="view === 'skin' ? 'text-emerald-600 font-semibold' : 'text-slate-600 hover:text-emerald-600'" class="transition">Skin Care</button>
+                    <button @click="setView('dental')" :class="view === 'dental' ? 'text-emerald-600 font-semibold' : 'text-slate-600 hover:text-emerald-600'" class="transition">Dental Care</button>
+                    <button @click="setView('booking')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-full font-medium transition shadow-sm flex items-center gap-1">
+                        <i data-lucide="calendar" class="w-4 h-4"></i> Book Appointment
+                    </button>
+                    <button @click="setView('admin')" :class="view === 'admin' ? 'text-purple-600 font-semibold' : 'text-slate-400 hover:text-slate-600'" class="text-sm transition flex items-center gap-1">
+                        <i data-lucide="shield-check" class="w-4 h-4"></i> Admin
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT CONTAINERS -->
+    <main class="min-h-[calc(100vh-140deg)]">
+        
+        <!-- HOME PAGE -->
+        <div x-show="view === 'home'" x-cloak class="animate-fadeIn">
+            <!-- Hero Section -->
+            <section class="gradient-bg py-20 px-4 sm:px-6 lg:px-8 text-center relative overflow-hidden">
+                <div class="max-w-4xl mx-auto relative z-10">
+                    <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Welcome to Excellence</span>
+                    <h1 class="text-4xl sm:text-6xl font-extrabold text-slate-900 mt-4 tracking-tight leading-tight">
+                        Advanced Healthcare <br><span class="text-emerald-600">Tailored For You</span>
+                    </h1>
+                    <p class="mt-6 text-lg text-slate-600 max-w-2xl mx-auto" x-text="clinicInfo.description">
+                        Experience clinical brilliance across specialized dermatology and next-generation dentistry right in the heart of the city.
+                    </p>
+                    <div class="mt-10 flex flex-wrap justify-center gap-4">
+                        <button @click="setView('booking')" class="bg-slate-900 hover:bg-slate-800 text-white px-8 py-3.5 rounded-full text-base font-medium shadow-lg transition">
+                            Schedule a Visit
+                        </button>
+                        <button @click="document.getElementById('services').scrollIntoView({behavior: 'smooth'})" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-8 py-3.5 rounded-full text-base font-medium transition">
+                            Explore Services
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Info Cards -->
+            <section class="max-w-7xl mx-auto px-4 -mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 relative z-20">
+                <div class="bg-white p-6 rounded-2xl shadow-xl border border-slate-50 flex items-start gap-4">
+                    <div class="p-3 bg-emerald-50 rounded-xl text-emerald-600"><i data-lucide="clock" class="w-6 h-6"></i></div>
+                    <div>
+                        <h4 class="font-bold text-slate-900">Working Hours</h4>
+                        <p class="text-sm text-slate-500 mt-1" x-text="clinicInfo.hours">Mon - Sat: 9:00 AM - 6:00 PM</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-xl border border-slate-50 flex items-start gap-4">
+                    <div class="p-3 bg-cyan-50 rounded-xl text-cyan-600"><i data-lucide="map-pin" class="w-6 h-6"></i></div>
+                    <div>
+                        <h4 class="font-bold text-slate-900">Location</h4>
+                        <p class="text-sm text-slate-500 mt-1" x-text="clinicInfo.address">123 Medical Hub Plaza, Suite 4B</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-xl border border-slate-50 flex items-start gap-4">
+                    <div class="p-3 bg-amber-50 rounded-xl text-amber-600"><i data-lucide="phone" class="w-6 h-6"></i></div>
+                    <div>
+                        <h4 class="font-bold text-slate-900">Direct Contact</h4>
+                        <p class="text-sm text-slate-500 mt-1" x-text="clinicInfo.phone">+1 (555) 019-2834</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Services Overview -->
+            <section id="services" class="max-w-7xl mx-auto px-4 py-24">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <h2 class="text-3xl font-bold text-slate-900">Our Core Medical Specializations</h2>
+                    <p class="text-slate-500 mt-2">World-class experts equipped with medical engineering innovations.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Skin Care Card -->
+                    <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 hover:shadow-md transition flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-500 mb-6"><i data-lucide="sparkles" class="w-6 h-6"></i></div>
+                            <h3 class="text-2xl font-bold text-slate-900">Advanced Dermatology & Skin Care</h3>
+                            <p class="text-slate-500 mt-3 line-clamp-3">From cosmetic rejuvenation and laser treatments to complex medical skin pathology management, keep your skin radiating vital health.</p>
+                        </div>
+                        <button @click="setView('skin')" class="mt-8 text-rose-600 font-medium flex items-center gap-2 hover:gap-3 transition">Discover Treatments <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+                    </div>
+                    <!-- Dental Card -->
+                    <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 hover:shadow-md transition flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-500 mb-6"><i data-lucide="smile" class="w-6 h-6"></i></div>
+                            <h3 class="text-2xl font-bold text-slate-900">Elite Cosmetic & General Dentistry</h3>
+                            <p class="text-slate-500 mt-3 line-clamp-3">Providing precision root canals, high-end porcelain veneers, dental implants, and standard digital smile alignments.</p>
+                        </div>
+                        <button @click="setView('dental')" class="mt-8 text-blue-600 font-medium flex items-center gap-2 hover:gap-3 transition">Explore Dentistry <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Meet Our Specialists -->
+            <section class="bg-slate-100 py-20 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="text-center mb-16">
+                        <h2 class="text-3xl font-bold text-slate-900">Meet Our Certified Specialists</h2>
+                        <p class="text-slate-500 mt-2">Top medical graduates with board certifications and decades of combined operational experience.</p>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <template x-for="doc in doctors" :key="doc.id">
+                            <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition border border-slate-200/60">
+                                <div class="h-48 bg-slate-200 relative flex items-center justify-center text-slate-400">
+                                    <i data-lucide="user" class="w-16 h-16"></i>
+                                    <span class="absolute top-4 right-4 text-xs font-semibold px-2.5 py-1 rounded-full text-white bg-slate-900/60 backdrop-blur-sm" x-text="doc.specialty"></span>
+                                </div>
+                                <div class="p-6">
+                                    <h4 class="text-lg font-bold text-slate-900" x-text="doc.name"></h4>
+                                    <p class="text-xs text-emerald-600 font-medium tracking-wide mt-1" x-text="doc.title"></p>
+                                    <button @click="selectedDoctor = doc.id; setView('booking')" class="mt-6 w-full py-2 bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700 font-medium text-slate-700 rounded-xl text-sm transition">
+                                        Check Availability
+                                    </button>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- SKIN CARE PAGE -->
+        <div x-show="view === 'skin'" x-cloak class="max-w-7xl mx-auto px-4 py-16 animate-fadeIn">
+            <div class="flex items-center gap-3 mb-4 text-rose-600 font-semibold tracking-wide uppercase text-sm">
+                <i data-lucide="sparkles" class="w-5 h-5"></i> Dermatology Dept
+            </div>
+            <h1 class="text-4xl font-extrabold text-slate-900">Dermatological Artistry & Science</h1>
+            <p class="text-slate-500 mt-2 max-w-2xl">Re-discover clinical glowing skin. Our custom targeted therapeutics handle both physiological wellness and aesthetics.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="text-xl font-bold text-slate-900">Laser Rejuvenation</h3>
+                    <p class="text-slate-500 text-sm mt-2">Non-invasive laser therapy handling deep hyperpigmentation, fine wrinkling lines, and acne scarring tissue breakdown safely.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="text-xl font-bold text-slate-900">Medical Acne Treatments</h3>
+                    <p class="text-slate-500 text-sm mt-2">Custom extraction pathways, chemical peeling balances, and targeted hormonal/dermatological prescriptions.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="text-xl font-bold text-slate-900">Anti-Aging Therapies</h3>
+                    <p class="text-slate-500 text-sm mt-2">Premium botox, dermal fillers, and molecular complex serums to natively stimulate matrix collagen production.</p>
+                </div>
+            </div>
+            <div class="mt-12 bg-rose-50/50 rounded-3xl p-8 border border-rose-100/50 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div>
+                    <h3 class="text-xl font-bold text-rose-900">Ready for a custom skincare analysis?</h3>
+                    <p class="text-rose-700/80 text-sm mt-1">Book an open diagnostics slot with one of our professional dermatologists today.</p>
+                </div>
+                <button @click="setView('booking')" class="bg-rose-600 hover:bg-rose-700 text-white font-medium px-6 py-3 rounded-full shadow-md transition whitespace-nowrap">
+                    Book Skincare Visit
+                </button>
+            </div>
+        </div>
+
+        <!-- DENTAL CARE PAGE -->
+        <div x-show="view === 'dental'" x-cloak class="max-w-7xl mx-auto px-4 py-16 animate-fadeIn">
+            <div class="flex items-center gap-3 mb-4 text-blue-600 font-semibold tracking-wide uppercase text-sm">
+                <i data-lucide="smile" class="w-5 h-5"></i> Odontology Dept
+            </div>
+            <h1 class="text-4xl font-extrabold text-slate-900">Advanced Smile Architecture</h1>
+            <p class="text-slate-500 mt-2 max-w-2xl">High precision dental corrections and pain-free preventative maintenance powered by modern intraoral digital scanning tools.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="text-xl font-bold text-slate-900">Cosmetic Veneers</h3>
+                    <p class="text-slate-500 text-sm mt-2">Flawless, ultra-thin porcelain laminate shells designed to look perfectly natural while creating striking architectural symmetry.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="text-xl font-bold text-slate-900">Dental Implants</h3>
+                    <p class="text-slate-500 text-sm mt-2">Bio-compatible structural titanium replacements mimicking accurate root foundations for missing teeth structures.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="text-xl font-bold text-slate-900">Orthodontic Aligners</h3>
+                    <p class="text-slate-500 text-sm mt-2">State of the art transparent structural aligners providing comfortable, invisible structural trajectory alignment.</p>
+                </div>
+            </div>
+            <div class="mt-12 bg-blue-50/50 rounded-3xl p-8 border border-blue-100/50 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div>
+                    <h3 class="text-xl font-bold text-blue-900">Restore your confident functional smile</h3>
+                    <p class="text-blue-700/80 text-sm mt-1">Schedule full computed panoramic x-rays and comprehensive diagnostic assessments.</p>
+                </div>
+                <button @click="setView('booking')" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-full shadow-md transition whitespace-nowrap">
+                    Book Dental Visit
+                </button>
+            </div>
+        </div>
+
+        <!-- BOOKING SYSTEM -->
+        <div x-show="view === 'booking'" x-cloak class="max-w-4xl mx-auto px-4 py-16 animate-fadeIn">
+            <h1 class="text-3xl font-extrabold text-slate-900 text-center">Schedule Real-Time Visit</h1>
+            <p class="text-slate-500 text-center mt-1">Select an active healthcare specialist and choose your precise timeslot.</p>
+
+            <div class="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-slate-100 mt-10">
+                <!-- Step 1: Choose Doctor -->
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">1. Select Medical Specialist</label>
+                    <select x-model="selectedDoctor" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <option value="">-- Choose a Professional --</option>
+                        <template x-for="doc in doctors" :key="doc.id">
+                            <option :value="doc.id" x-text="doc.name + ' (' + doc.specialty + ')'"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <!-- Step 2: Choose Slot -->
+                <div class="mb-6" x-show="selectedDoctor">
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">2. Choose Available Time Slot</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <template x-for="slot in filteredSlots()" :key="slot.id">
+                            <button 
+                                @click="selectedSlot = slot.id"
+                                :class="selectedSlot === slot.id ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm' : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'"
+                                class="p-3 rounded-xl border font-medium text-sm transition text-center flex flex-col items-center justify-center">
+                                <span class="font-bold text-xs tracking-wider uppercase opacity-75" x-text="slot.date"></span>
+                                <span class="text-base mt-0.5" x-text="slot.time"></span>
+                            </button>
+                        </template>
+                    </div>
+                    <div x-show="filteredSlots().length === 0" class="text-sm text-amber-600 bg-amber-50 p-3 rounded-xl border border-amber-100">
+                        No active slots open for this provider. Try again later or check back.
+                    </div>
+                </div>
+
+                <!-- Step 3: Patient Information -->
+                <div class="space-y-4 pt-4 border-t border-slate-100" x-show="selectedDoctor && selectedSlot">
+                    <label class="block text-sm font-semibold text-slate-700 -mb-2">3. Patient Registration Contact Details</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <input type="text" x-model="bookingForm.name" placeholder="Full Legal Name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
+                        </div>
+                        <div>
+                            <input type="email" x-model="bookingForm.email" placeholder="Email Address" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
+                        </div>
+                    </div>
+                    <div>
+                        <input type="tel" x-model="bookingForm.phone" placeholder="Mobile Number" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
+                    </div>
+                    
+                    <button @click="submitBooking()" class="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl transition shadow-lg shadow-emerald-600/20">
+                        Confirm Appointment Securely
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADMIN DASHBOARD -->
+        <div x-show="view === 'admin'" x-cloak class="max-w-7xl mx-auto px-4 py-16 animate-fadeIn">
+            <!-- Login Overlay -->
+            <div x-show="!isAdminAuthenticated" class="max-w-md mx-auto bg-white p-8 rounded-3xl shadow-xl border border-slate-200">
+                <div class="text-center mb-6">
+                    <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-3"><i data-lucide="lock" class="w-6 h-6"></i></div>
+                    <h2 class="text-2xl font-bold text-slate-900">Clinic Management Gateway</h2>
+                    <p class="text-xs text-slate-400 mt-1">Default Demo Code: <span class="font-mono bg-slate-100 px-1 py-0.5 rounded text-purple-700">admin123</span></p>
+                </div>
+                <div class="space-y-4">
+                    <input type="password" x-model="adminPassword" placeholder="Enter Administrative Access Key" class="w-full border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm">
+                    <button @click="loginAdmin()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 rounded-xl transition">
+                        Verify Identity
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard Pane -->
+            <div x-show="isAdminAuthenticated" class="space-y-10">
+                <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-200 pb-6">
+                    <div>
+                        <h1 class="text-3xl font-extrabold text-slate-900">Internal Clinic Administration Dashboard</h1>
+                        <p class="text-slate-500 text-sm">Manage dynamic app content variables, view bookings, and provision schedule slots.</p>
+                    </div>
+                    <button @click="isAdminAuthenticated = false; adminPassword = ''" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold px-4 py-2 rounded-xl transition">
+                        Secure Logout
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Left: Clinic Info Configuration -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                        <h3 class="font-bold text-slate-900 border-b pb-2 flex items-center gap-2"><i data-lucide="edit-3" class="w-4 h-4 text-purple-500"></i> Variable Settings</h3>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-500 mb-1">Clinic Brand Name</label>
+                            <input type="text" x-model="clinicInfo.name" class="w-full text-sm border p-2 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-500 mb-1">Hero Description Text</label>
+                            <textarea x-model="clinicInfo.description" rows="3" class="w-full text-sm border p-2 rounded-lg"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-500 mb-1">Operational Hours Info</label>
+                            <input type="text" x-model="clinicInfo.hours" class="w-full text-sm border p-2 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-500 mb-1">Physical Location Address</label>
+                            <input type="text" x-model="clinicInfo.address" class="w-full text-sm border p-2 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-500 mb-1">Phone Line</label>
+                            <input type="text" x-model="clinicInfo.phone" class="w-full text-sm border p-2 rounded-lg">
+                        </div>
+                        <button @click="saveClinicInfo()" class="w-full py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium text-sm rounded-lg transition shadow">
+                            Commit Settings Updates
+                        </button>
+                    </div>
+
+                    <!-- Right: Slots & Current Bookings Data -->
+                    <div class="lg:col-span-2 space-y-8">
+                        <!-- Provision Schedule Slots -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                            <h3 class="font-bold text-slate-900 border-b pb-3 mb-4 flex items-center gap-2"><i data-lucide="plus-circle" class="w-4 h-4 text-emerald-500"></i> Provision Provider Availability Slots</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <select x-model="newSlot.doctorId" class="border p-2 rounded-xl text-sm">
+                                    <option value="">Select Doctor</option>
+                                    <template x-for="doc in doctors" :key="doc.id">
+                                        <option :value="doc.id" x-text="doc.name"></option>
+                                    </template>
+                                </select>
+                                <input type="date" x-model="newSlot.date" class="border p-2 rounded-xl text-sm">
+                                <input type="time" x-model="newSlot.time" class="border p-2 rounded-xl text-sm">
+                            </div>
+                            <button @click="createSlot()" class="mt-4 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-medium text-sm rounded-xl transition">
+                                Insert Available Slot
+                            </button>
+                        </div>
+
+                        <!-- Live Queue Monitor -->
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                            <div class="p-6 border-b border-slate-100">
+                                <h3 class="font-bold text-slate-900 flex items-center gap-2"><i data-lucide="table" class="w-4 h-4 text-cyan-500"></i> Live Booked Appointments Queue</h3>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm text-slate-500">
+                                    <thead class="bg-slate-50 text-xs text-slate-700 uppercase font-mono border-b border-slate-100">
+                                        <tr>
+                                            <th class="p-4">Patient Profile</th>
+                                            <th class="p-4">Assigned Provider</th>
+                                            <th class="p-4">Scheduled Window</th>
+                                            <th class="p-4 text-right">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100">
+                                        <template x-for="apt in appointments" :key="apt.id">
+                                            <tr class="hover:bg-slate-50/80 transition">
+                                                <td class="p-4">
+                                                    <div class="font-bold text-slate-900" x-text="apt.patientName"></div>
+                                                    <div class="text-xs text-slate-400" x-text="apt.patientEmail + ' | ' + apt.patientPhone"></div>
+                                                </td>
+                                                <td class="p-4 font-medium text-slate-700" x-text="getDoctorName(apt.doctorId)"></td>
+                                                <td class="p-4">
+                                                    <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 text-xs px-2 py-0.5 rounded font-mono font-semibold" x-text="apt.date + ' ' + apt.time"></span>
+                                                </td>
+                                                <td class="p-4 text-right">
+                                                    <button @click="cancelAppointment(apt.id)" class="text-rose-600 hover:text-rose-800 font-medium text-xs bg-rose-50 hover:bg-rose-100 px-2.5 py-1.5 rounded-lg transition">
+                                                        Revoke/Cancel
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                        <tr x-show="appointments.length === 0">
+                                            <td colspan="4" class="p-8 text-center text-slate-400 italic">No scheduled entries registered inside system database records.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 py-12 mt-20 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <div class="flex items-center space-x-2 text-white mb-4">
+                    <i data-lucide="activity" class="h-6 w-6 text-emerald-400"></i>
+                    <span class="text-lg font-bold tracking-tight" x-text="clinicInfo.name"></span>
+                </div>
+                <p class="text-xs leading-relaxed max-w-sm">Providing integrated, next-generation medical skin interventions and high-precision dental aesthetics designed to elevate long-term health metrics.</p>
+            </div>
+            <div>
+                <h4 class="text-white text-sm font-bold mb-4 tracking-wider uppercase">Departments</h4>
+                <ul class="space-y-2 text-xs">
+                    <li><button @click="setView('skin')" class="hover:text-emerald-400 transition">Dermatology & Skin Rejuvenation</button></li>
+                    <li><button @click="setView('dental')" class="hover:text-emerald-400 transition">Elite Dental & Cosmetic Architecture</button></li>
+                    <li><button @click="setView('booking')" class="hover:text-emerald-400 transition">Immediate Real-time Scheduling Engine</button></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white text-sm font-bold mb-4 tracking-wider uppercase">System Notice</h4>
+                <p class="text-xs leading-relaxed">This production-ready standalone engine implements internal state tracking via local storage structures to support persistent clinic operation features offline.</p>
+                <p class="text-[10px] text-slate-600 mt-4">&copy; 2026 Sjux Medical Inc. All clinical rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ENGINE SCRIPTS -->
+    <script>
+        function clinicApp() {
+            return {
+                view: 'home',
+                isAdminAuthenticated: false,
+                adminPassword: '',
+                selectedDoctor: '',
+                selectedSlot: '',
+                
+                bookingForm: { name: '', email: '', phone: '' },
+                newSlot: { doctorId: '', date: '', time: '' },
+
+                // Simulated Seed Data / State Management Storage Core
+                clinicInfo: {
+                    name: 'Sjux Clinic Hub',
+                    description: 'Experience clinical brilliance across specialized high-end dermatology and next-generation dentistry right inside our state of the art modern diagnostics center.',
+                    hours: 'Mon - Sat: 9:00 AM - 6:00 PM',
+                    address: '123 Medical Hub Plaza, Suite 4B',
+                    phone: '+1 (555) 019-2834'
+                },
+
+                doctors: [
+                    { id: 'd1', name: 'Dr. Evelyn Sterling', specialty: 'Skin Care', title: 'Lead Laser Dermatologist' },
+                    { id: 'd2', name: 'Dr. Marcus Vance', specialty: 'Dental Care', title: 'Orthodontic Smile Architect' },
+                    { id: 'd3', name: 'Dr. Alaina Thorne', specialty: 'Skin Care', title: 'Cosmetic Skin Micro-Surgeon' }
+                ],
+
+                slots: [],
+                appointments: [],
+
+                init() {
+                    // Pull state from localStorage if it exists
+                    if (localStorage.getItem('sjux_clinic_info')) this.clinicInfo = JSON.parse(localStorage.getItem('sjux_clinic_info'));
+                    if (localStorage.getItem('sjux_appointments')) this.appointments = JSON.parse(localStorage.getItem('sjux_appointments'));
+                    
+                    if (localStorage.getItem('sjux_slots')) {
+                        this.slots = JSON.parse(localStorage.getItem('sjux_slots'));
+                    } else {
+                        // Generate mock tracking availability slots if empty
+                        this.slots = [
+                            { id: 's1', doctorId: 'd1', date: '2026-07-20', time: '09:30 AM' },
+                            { id: 's2', doctorId: 'd1', date: '2026-07-20', time: '11:00 AM' },
+                            { id: 's3', doctorId: 'd2', date: '2026-07-21', time: '02:00 PM' },
+                            { id: 's4', doctorId: 'd2', date: '2026-07-21', time: '03:30 PM' },
+                            { id: 's5', doctorId: 'd3', date: '2026-07-22', time: '10:00 AM' }
+                        ];
+                        this.saveSlots();
+                    }
+
+                    // Render dynamic SVG icon assets
+                    setTimeout(() => { lucide.createIcons(); }, 50);
+                },
+
+                setView(targetView) {
+                    this.view = targetView;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    setTimeout(() => { lucide.createIcons(); }, 30);
+                },
+
+                filteredSlots() {
+                    return this.slots.filter(s => s.doctorId === this.selectedDoctor);
+                },
+
+                getDoctorName(id) {
+                    const doc = this.doctors.find(d => d.id === id);
+                    return doc ? doc.name : 'Unassigned Provider';
+                },
+
+                submitBooking() {
+                    if (!this.bookingForm.name || !this.bookingForm.email || !this.bookingForm.phone) {
+                        alert('Please fill out all patient registration contact fields.');
+                        return;
+                    }
+
+                    const targetSlot = this.slots.find(s => s.id === this.selectedSlot);
+                    
+                    const newAppointment = {
+                        id: 'apt-' + Date.now(),
+                        doctorId: this.selectedDoctor,
+                        slotId: this.selectedSlot,
+                        date: targetSlot.date,
+                        time: targetSlot.time,
+                        patientName: this.bookingForm.name,
+                        patientEmail: this.bookingForm.email,
+                        patientPhone: this.bookingForm.phone
+                    };
+
+                    this.appointments.push(newAppointment);
+                    // Drop slot from system database availability pool
+                    this.slots = this.slots.filter(s => s.id !== this.selectedSlot);
+                    
+                    localStorage.setItem('sjux_appointments', JSON.stringify(this.appointments));
+                    this.saveSlots();
+
+                    alert(`Appointment confirmed successfully with ${this.getDoctorName(this.selectedDoctor)} on ${targetSlot.date} at ${targetSlot.time}!`);
+                    
+                    // Reset input elements
+                    this.bookingForm = { name: '', email: '', phone: '' };
+                    this.selectedDoctor = '';
+                    this.selectedSlot = '';
+                    this.setView('home');
+                },
+
+                // Administrative Logic Control Interfaces
+                loginAdmin() {
+                    if (this.adminPassword === 'admin123') {
+                        this.isAdminAuthenticated = true;
+                        setTimeout(() => { lucide.createIcons(); }, 50);
+                    } else {
+                        alert('Invalid Administrative security access token credential.');
+                    }
+                },
+
+                saveClinicInfo() {
+                    localStorage.setItem('sjux_clinic_info', JSON.stringify(this.clinicInfo));
+                    alert('Clinic parameters saved successfully.');
+                },
+
+                createSlot() {
+                    if (!this.newSlot.doctorId || !this.newSlot.date || !this.newSlot.time) {
+                        alert('Provide all parameters to create an availability slot.');
+                        return;
+                    }
+                    
+                    // Clean time string formatting mapping
+                    let timeStr = this.newSlot.time;
+                    const [hrs, mins] = timeStr.split(':');
+                    const formatHrs = parseInt(hrs) % 12 || 12;
+                    const ampm = parseInt(hrs) >= 12 ? 'PM' : 'AM';
+                    timeStr = `${formatHrs}:${mins} ${ampm}`;
+
+                    this.slots.push({
+                        id: 's-' + Date.now(),
+                        doctorId: this.newSlot.doctorId,
+                        date: this.newSlot.date,
+                        time: timeStr
+                    });
+
+                    this.saveSlots();
+                    alert('New availability slot successfully active.');
+                    this.newSlot = { doctorId: '', date: '', time: '' };
+                },
+
+                cancelAppointment(id) {
+                    if (confirm('Are you sure you want to delete and clear this scheduled client data profile?')) {
+                        const apt = this.appointments.find(a => a.id === id);
+                        // Return slot configuration back to standard pools
+                        this.slots.push({
+                            id: apt.slotId || 's-' + Date.now(),
+                            doctorId: apt.doctorId,
+                            date: apt.date,
+                            time: apt.time
+                        });
+                        this.appointments = this.appointments.filter(a => a.id !== id);
+                        localStorage.setItem('sjux_appointments', JSON.stringify(this.appointments));
+                        this.saveSlots();
+                    }
+                },
+
+                saveSlots() {
+                    localStorage.setItem('sjux_slots', JSON.stringify(this.slots));
+                }
+            }
+        }
+    </script>
+</body>
+</html>
